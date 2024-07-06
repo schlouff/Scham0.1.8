@@ -23,9 +23,8 @@ def set_page_top():
         }
         </style>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
-    st.markdown(id="page-top", body="")
 
 def auto_scroll_to_top():
     js = '''
