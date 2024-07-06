@@ -13,11 +13,31 @@ from datetime import datetime
 
 from upload_pdf import upload_pdf_to_gcs
 
+def set_page_top():
+    st.markdown(
+        """
+        <style>
+        .element-container:has(#page-top) {
+            position: relative;
+            top: 0px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(id="page-top", body="")
+
 def auto_scroll_to_top():
     js = '''
     <script>
-        var body = window.parent.document.querySelector(".main");
-        body.scrollTop = 0;
+        function scrollToTop() {
+            window.parent.scrollTo(0, 0);
+            window.parent.document.querySelector('.main').scrollTo(0, 0);
+            window.parent.document.querySelector('div[data-testid="stVerticalBlock"]').scrollTo(0, 0);
+        }
+        scrollToTop();
+        // Verzögerung hinzufügen, um sicherzustellen, dass das Scrollen nach dem Rendern erfolgt
+        setTimeout(scrollToTop, 100);
     </script>
     '''
     st.components.v1.html(js, height=0)
@@ -111,6 +131,7 @@ def create_image_url(description_prompt):
 
 
 if __name__ == '__main__':
+    set_page_top()
     col1, col2 = st.columns([0.85, 0.15])
     with col1:
         st.title('Chat Bot')
