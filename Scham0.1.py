@@ -26,17 +26,17 @@ client = OpenAI()
 
 # Initialisierungen
 questions = [
-    "    "**1/8**\n\n**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?\n\n**Dann schreib 'bereit' und drück auf 'Senden'.**",
+    """\n\n**1/8**\n\n**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?\n\n**Dann schreib 'bereit' und drück auf 'Senden'.**""",
 
-    "**2/8**\n\n**Erinnere dich an eine peinliche Situation.**\n\nDu kannst später ein Bild daraus kreieren. \n\n Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\n**Wenn du eine Erinnerung in deinem Kopf hast, schreib 'ok' und drück auf 'Senden'.**",
+    "\n\n**2/8**\n\n**Erinnere dich an eine peinliche Situation.**\n\nDu kannst später ein Bild daraus kreieren. \n\n Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\n**Wenn du eine Erinnerung in deinem Kopf hast, schreib 'ok' und drück auf 'Senden'.**",
 
-    "**3/8**\n\n\n\n**Ruf dir die Situation vor Augen.**\n\nWo ist sie passiert?\n\nWer war dabei?\n\nGibt es bestimmte Wörter oder Sätze, an die du dich erinnerst? Wie klang die Stimme von dir und deinem Gegenüber?\n\nGibt es Kleidungsstücke, Gegenstände, Farben, Gerüche, an die du dich erinnerst?**Wenn du dich genug erinnert hast, schreib 'ok' und drück auf 'Senden'.**",
+    "\n\n**3/8**\n\n**Ruf dir die Situation vor Augen.**\n\nWo ist sie passiert?\n\nWer war dabei?\n\nGibt es bestimmte Wörter oder Sätze, an die du dich erinnerst? Wie klang die Stimme von dir und deinem Gegenüber?\n\nGibt es Kleidungsstücke, Gegenstände, Farben, Gerüche, an die du dich erinnerst?\n\n**Wenn du dich genug erinnert hast, schreib 'ok' und drück auf 'Senden'.**",
 
-    "**4/8**\n\n**Jetzt wandel es um: **\n\n**Stell dir vor, du wärst in der Situation ein Tier gewesen.** Was wäre das für ein Tier? Vielleicht eine kleine Maus oder ein tollpatschiges Schwein? Oder ein Gegenstand, wie ein stummer Stein oder ein verblühtes Gänseblümchen?\n\n**Schreib auf wer oder was du warst und drück auf 'Senden'.**",
+    "\n\n**4/8**\n\n**Jetzt wandel es um: **\n\n**Stell dir vor, du wärst in der Situation ein Tier gewesen.** Was wäre das für ein Tier? Vielleicht eine kleine Maus oder ein tollpatschiges Schwein? Oder ein Gegenstand, wie ein stummer Stein oder ein verblühtes Gänseblümchen?\n\n**Schreib auf wer oder was du warst und drück auf 'Senden'.**",
 
-    "**5/8**\n\n**Welches Tier oder anderes wären die anderen gewesen?**\n\nVielleicht ein fieses Stinktier, ein Herde lachender Kaninchen oder etwas anderes?\n\n**Schreib es auf und drück auf 'Senden'.**",
+    "\n\n**5/8**\n\n**Welches Tier oder anderes wären die anderen gewesen?**\n\nVielleicht ein fieses Stinktier, ein Herde lachender Kaninchen oder etwas anderes?\n\n**Schreib es auf und drück auf 'Senden'.**",
 
-    "**6/8**\n\n**Raum oder Landschaft**\n\nWenn die Situation ein Raum oder eine Landschaft wäre, wie sähe das aus? Vielleicht ein enger Raum, in dem das Atmen schwer fällt. Oder eine Bühne mit grellem Scheinwerferlicht?\n\nSchreib es auf: **Wie sieht deine Landschaft aus?**\n\n**Drück anschließend auf 'Senden'.**",
+    "\n\n**6/8**\n\n**Raum oder Landschaft**\n\nWenn die Situation ein Raum oder eine Landschaft wäre, wie sähe das aus? Vielleicht ein enger Raum, in dem das Atmen schwer fällt. Oder eine Bühne mit grellem Scheinwerferlicht?\n\nSchreib es auf: **Wie sieht deine Landschaft aus?**\n\n**Drück anschließend auf 'Senden'.**",
 
     "**7/8**\n\n**Was gibt dir Kraft?**\n\nWas ist ein Lieblingsgegenstand, eine Farbe, eine Ort, der dir Kraft gibt.\n\n(Personen sind leider nicht erlaubt, aber du kannst sie in Form von kraftspendenden Tieren auch nennen.)",
 
@@ -74,7 +74,7 @@ def create_artistic_description(responses):
         f"5. andere Figuren: {responses[5]}\n"
         f"6. Raum oder Landschaft: {responses[6]}\n"
         f"7. besondere Aufmerksamkeit als Kraftgebendes Element bekommt: {responses[7]}\n"
-        f"Spezielle Anweisungen: Keine Personen: Es sollen keine menschlichen Figuren im Bild vorkommen.Falls notwendig, können Personen durch Tiere ersetzt werden, um die Bildbeschreibung konsistent und vollständig zu machen. Bitte integriere all diese Elemente in eine zusammenhängende und künstlerische bildhafte Beschreibung, die DALL·E als Prompt für die Bilderstellung verwendet werden kann."
+        f"Spezielle Anweisungen: Keine Personen: Es sollen keine menschlichen Figuren im Bild vorkommen.Falls notwendig, können Personen durch Tiere ersetzt werden, um die Bildbeschreibung konsistent und vollständig zu machen. Stelle sicher, dass die Bildbeschreibung den Sicherheitsrichtlinien von DALL·E entspricht und keine geschützten oder unangemessenen Inhalte enthält. Bitte integriere all diese Elemente in eine zusammenhängende und künstlerische bildhafte Beschreibung, die DALL·E als Prompt für die Bilderstellung verwendet werden kann."
 
     )
 
