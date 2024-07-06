@@ -68,15 +68,14 @@ def chat_with_bot(user_input):
 
 def create_artistic_description(responses):
     description_prompt = (
-        f"Erstelle (auf deutsch) eine künstlerische Beschreibung, die auf den folgenden Eingaben beruht:\n"
-        f"1. : {responses[1]}\n"
-        f"2. : {responses[2]}\n"
+        f"Erstelle (auf deutsch) eine künstlerische Beschreibung,und detailreiche Beschreibung, die als Prompt für DALL·E dient, um ein Bild zu generieren. Die Beschreibung sollte auf den folgenden Eingaben basieren und diese in eine zusammenhängende, bildhafte Szene integrieren:\n"
         f"3. Details (Kleidung, Gegenstände, Farben, Gerüche): {responses[3]}\n"
         f"4. Protagonist: {responses[4]}\n"
         f"5. andere Figuren: {responses[5]}\n"
         f"6. Raum oder Landschaft: {responses[6]}\n"
         f"7. besondere Aufmerksamkeit als Kraftgebendes Element bekommt: {responses[7]}\n"
-        f"Bitte integriere all diese Elemente in eine zusammenhängende, bildhafte Beschreibung. Wenn Personen genannt werden ersetze sie durch metaphorische Tiere die gut passen können oder lass sie weg. "
+        f"Spezielle Anweisungen: Keine Personen: Es sollen keine menschlichen Figuren im Bild vorkommen.Falls notwendig, können Personen durch Tiere ersetzt werden, um die Bildbeschreibung konsistent und vollständig zu machen. Bitte integriere all diese Elemente in eine zusammenhängende und künstlerische bildhafte Beschreibung, die DALL·E als Prompt für die Bilderstellung verwendet werden kann."
+
     )
 
     messages.append({'role': 'user', 'content': description_prompt})
