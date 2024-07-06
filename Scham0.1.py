@@ -182,6 +182,7 @@ if __name__ == '__main__':
                         pdf = create_10x15_pdf_with_image(image_url, st.session_state.user_name)
 
                         st.session_state.current_question_index += 1
+                        
     if 'pdf' in locals():
         # Konvertieren Sie das PDF in ein BytesIO-Objekt
         pdf_bytes = BytesIO(pdf.getvalue())
@@ -189,10 +190,24 @@ if __name__ == '__main__':
         # Generiere einen Timestamp für den Dateinamen
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+        # Dateiname für GCS
+        gcs_filename = f"10x15_pdf_mit_bild_{timestamp}.pdf"
+
+        # Bucket-Name
+        bucket_name = "vse-schamstaton24-07"
+
+        try:
+            # Upload zur Google Cloud Storage
+            upload_pdf_to_gcs(bucket_name, pdf_bytes, f"MemePDFs/{gcs_filename}")
+            st.success(f"PDF erfolgreich in Google Cloud Storage hochgeladen: {gcs_filename}")
+        except Exception as e:
+            st.error(f"Fehler beim Hochladen in Google Cloud Storage: {str(e)}")
+
+        # Download-Button für den Benutzer
         st.download_button(
             label=f"10x15 PDF herunterladen ({timestamp})",
             data=pdf,
-            file_name=f"10x15_pdf_mit_bild_{timestamp}.pdf",
+            file_name=gcs_filename,
             mime="application/pdf"
         )
 
