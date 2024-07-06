@@ -16,10 +16,10 @@ from upload_pdf import upload_pdf_to_gcs
 def set_page_top():
     st.markdown(
         """
+        <div id="page-top"></div>
         <style>
-        .element-container:has(#page-top) {
-            position: relative;
-            top: 0px;
+        div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] {
+            padding-top: 0rem;
         }
         </style>
         """,
