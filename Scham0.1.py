@@ -13,7 +13,14 @@ from datetime import datetime
 
 from upload_pdf import upload_pdf_to_gcs
 
-
+def auto_scroll_to_top():
+    js = '''
+    <script>
+        var body = window.parent.document.querySelector(".main");
+        body.scrollTop = 0;
+    </script>
+    '''
+    st.components.v1.html(js, height=0)
 # Setze den API-Schlüssel
 
 api_key = st.secrets["api"]["api_key"]
@@ -182,6 +189,8 @@ if __name__ == '__main__':
                         pdf = create_10x15_pdf_with_image(image_url, st.session_state.user_name)
 
                         st.session_state.current_question_index += 1
+
+                    auto_scroll_to_top()
 
     if 'pdf' in locals():
         # Konvertieren Sie das PDF in ein BytesIO-Objekt
