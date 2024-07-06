@@ -26,23 +26,21 @@ client = OpenAI()
 
 # Initialisierungen
 questions = [
-    "**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?\n\n**Dann schreib 'bereit' und drück auf 'send'.**",
+    "    "**1/8**\n\n**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?\n\n**Dann schreib 'bereit' und drück auf 'Senden'.**",
 
-    "**Erinnere dich an eine peinliche Situation.**\n\nDu musst sie niemandem sagen. Aber wir wollen daraus ein Bild machen.\n\nAlso: Was hast du für eine Situation erlebt, die peinlich war oder die Scham ausgelöst hat?\n\n**Übernimm Verantwortung für dich.**\n\nManche Erinnerungen an Scham oder Peinlichkeit, können beunruhigende Gefühle auslösen. Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\n**Wenn du eine Erinnerung in deinem Kopf hast, schreib 'ok' und drück auf 'send'.**",
+    "**2/8**\n\n**Erinnere dich an eine peinliche Situation.**\n\nDu kannst später ein Bild daraus kreieren. \n\n Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\n**Wenn du eine Erinnerung in deinem Kopf hast, schreib 'ok' und drück auf 'Senden'.**",
 
-    "**Erinnere dich an das, was gesagt wurde.**\n\nRuf dir die Situation vor Augen.\n\nWo ist sie passiert?\n\nWer war dabei?\n\nGibt es bestimmte Wörter oder Sätze, an die du dich erinnerst? Wie klang die Stimme von dir und deinem Gegenüber?\n\n**Wenn du dich genug erinnert hast, schreib 'ok' und drück auf 'send'.**",
+    "**3/8**\n\n\n\n**Ruf dir die Situation vor Augen.**\n\nWo ist sie passiert?\n\nWer war dabei?\n\nGibt es bestimmte Wörter oder Sätze, an die du dich erinnerst? Wie klang die Stimme von dir und deinem Gegenüber?\n\nGibt es Kleidungsstücke, Gegenstände, Farben, Gerüche, an die du dich erinnerst?**Wenn du dich genug erinnert hast, schreib 'ok' und drück auf 'Senden'.**",
 
-    "**Erinnere dich an die Details und schreib sie auf.**\n\nGibt es Kleidungsstücke, Gegenstände, Farben, Gerüche, an die du dich erinnerst?\n\n**Wenn du ein oder zwei Details teilen willst, schreib sie auf.**",
+    "**4/8**\n\n**Jetzt wandel es um: **\n\n**Stell dir vor, du wärst in der Situation ein Tier gewesen.** Was wäre das für ein Tier? Vielleicht eine kleine Maus oder ein tollpatschiges Schwein? Oder ein Gegenstand, wie ein stummer Stein oder ein verblühtes Gänseblümchen?\n\n**Schreib auf wer oder was du warst und drück auf 'Senden'.**",
 
-    "**Wandel es um: du als Tier**\n\nStell dir vor, du wärst in der Situation ein Tier gewesen. Was wäre das für ein Tier? Vielleicht eine kleine Maus oder ein tollpatschiges Schwein? Oder ein Gegenstand, wie ein stummer Stein oder ein verblühtes Gänseblümchen?\n\n**Schreib das Tier oder die andere Sache auf, die du warst und drück auf 'send'.**",
+    "**5/8**\n\n**Welches Tier oder anderes wären die anderen gewesen?**\n\nVielleicht ein fieses Stinktier, ein Herde lachender Kaninchen oder etwas anderes?\n\n**Schreib es auf und drück auf 'Senden'.**",
 
-    "**Die anderen als Tier**\n\nWelches Tier oder anderes wären die anderen gewesen?\n\nVielleicht ein fieses Stinktier, ein Herde lachender Kaninchen oder etwas anderes?\n\n**Schreib es auf und drück auf 'send'.**",
+    "**6/8**\n\n**Raum oder Landschaft**\n\nWenn die Situation ein Raum oder eine Landschaft wäre, wie sähe das aus? Vielleicht ein enger Raum, in dem das Atmen schwer fällt. Oder eine Bühne mit grellem Scheinwerferlicht?\n\nSchreib es auf: **Wie sieht deine Landschaft aus?**\n\n**Drück anschließend auf 'Senden'.**",
 
-    "**Als vorletztes: Raum oder Landschaft**\n\nWenn die Situation ein Raum oder eine Landschaft wäre, wie sähe das aus? Vielleicht ein enger Raum, in dem das Atmen schwer fällt. Oder eine Bühne mit grellem Scheinwerferlicht?\n\nSchreib es auf: **Wie sieht deine Landschaft aus?**\n\n**Und drück auf 'send'.**",
+    "**7/8**\n\n**Was gibt dir Kraft?**\n\nWas ist ein Lieblingsgegenstand, eine Farbe, eine Ort, der dir Kraft gibt.\n\n(Personen sind leider nicht erlaubt, aber du kannst sie in Form von kraftspendenden Tieren auch nennen.)",
 
-    "**Was gibt dir Kraft?**\n\nWas ist ein Lieblingsgegenstand, eine Farbe, eine Ort, der dir Kraft gibt.\n\n(Personen sind leider nicht erlaubt, aber du kannst sie in Form von kraftspendenden Tieren auch nennen.)",
-
-    "**Danke!**\n\nUnten erscheint gleich dein Bild."
+    "**8/8**\n\n**Danke!**\n\nUnten erscheint gleich dein Bild. Vielleicht dauert es einen kleinen Moment."
 ]
 
 bot_responses = list()
