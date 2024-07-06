@@ -11,6 +11,9 @@ import time
 from openai import OpenAI
 from datetime import datetime
 
+from upload_pdf import upload_pdf_to_gcs
+
+
 # Setze den API-Schlüssel
 
 api_key = st.secrets["api"]["api_key"]
@@ -182,7 +185,7 @@ if __name__ == '__main__':
                         pdf = create_10x15_pdf_with_image(image_url, st.session_state.user_name)
 
                         st.session_state.current_question_index += 1
-                        
+
     if 'pdf' in locals():
         # Konvertieren Sie das PDF in ein BytesIO-Objekt
         pdf_bytes = BytesIO(pdf.getvalue())
