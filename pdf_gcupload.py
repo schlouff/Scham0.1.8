@@ -1,6 +1,14 @@
 import streamlit as st
 from google.cloud import storage
+from google.oauth2 import service_account
 import os
+import requests
+
+gcp_credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcs_bucket"]
+)
+
+storage_client = storage.Client(credentials=gcp_credentials, project=gcp_credentials.project_id)
 
 
 def upload_to_gcs(bucket_name, source_file_path, destination_blob_name):
@@ -22,7 +30,7 @@ file_path = "test_pdf.pdf"
 file_name = os.path.basename(file_path)
 
 # GCS Bucket Name
-bucket_name = "vse-schamstation24-07-2"
+bucket_name = st.secrets["gcs_bucket"]["gcs_bucket"]
 
 if st.button("Datei hochladen"):
     try:
@@ -43,11 +51,9 @@ else:
     st.warning(f"Die Datei {file_path} wurde nicht gefunden.")
 
 st.write("Umgebungsinformationen:")
-st.write(f"KUBERNETES_SERVICE_HOST: {os.environ.get('KUBERNETES_SERVICE_HOST', 'Nicht gesetzt')}")
-st.write(f"KUBERNETES_SERVICE_PORT: {os.environ.get('KUBERNETES_SERVICE_PORT', 'Nicht gesetzt')}")
-st.write(f"GKE_METADATA_SERVER: {os.environ.get('GKE_METADATA_SERVER', 'Nicht gesetzt')}")
 st.write(f"GOOGLE_CLOUD_PROJECT: {os.environ.get('GOOGLE_CLOUD_PROJECT', 'Nicht gesetzt')}")
-st.write(f"GOOGLE_APPLICATION_CREDENTIALS: {os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', 'Nicht gesetzt')}")
+st.write(f"Verwendetes Service-Account: {gcp_credentials.service_account_email}")
+st.write(f"Projekt: {gcp_credentials.project_id}")
 
 try:
     response = requests.get('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/', headers={'Metadata-Flavor': 'Google'}, timeout=2)
