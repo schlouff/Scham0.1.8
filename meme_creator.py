@@ -37,21 +37,18 @@ def create_meme(user_name, meme_text, image_url):
         st.error(f"Fehler beim Erstellen des PDFs: {str(e)}")
 
 
-def meme_creator_ui(image_url):
+def meme_creator_ui(image_url, user_name):
     st.subheader("Erstelle dein Meme")
 
-    # Eingabefeld für den Benutzernamen
-    user_name = st.text_input("Dein Name", "")
+    # Anzeige des Benutzernamens
+    st.write(f"Meme erstellt von: {user_name}")
 
     # Eingabefeld für den Memetext
     st.subheader("Schreibe hier deinen Wenn-du-Satz auf")
     meme_text = st.text_input("Wenn-du-Satz", "")
 
     if st.button('Memetext hinzufügen'):
-        if meme_text and user_name:
+        if meme_text:
             create_meme(user_name, meme_text, image_url)
         else:
-            if not user_name:
-                st.warning("Bitte gib deinen Namen ein.")
-            if not meme_text:
-                st.warning("Bitte gib einen Wenn-du-Satz ein.")
+            st.warning("Bitte gib einen Wenn-du-Satz ein.")
