@@ -7,7 +7,13 @@ from PIL import Image
 import requests
 from reportlab.lib.utils import ImageReader
 
-def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text=""):
+
+def create_placeholder_image(width, height):
+    img = Image.new('RGB', (width, height), color=(200, 200, 200))
+    return img
+
+
+def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text="", image_url=None):
     buffer = io.BytesIO()
 
     # 10x15 cm Seitengröße
@@ -26,53 +32,38 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text=""):
     max_width = page_width - 2 * margin
     max_height = page_height * 0.7  # Maximale Höhe des Bildes (70% der Seitenhöhe)
 
-    # Feste Bild-URL als Platzhalter
-    image_url = "https://help.blackbit.com/hubfs/hilfe.blackbit.de/wordpress%20bild%20aus%20url%20hinzufuegen%201.png"
+    # Bildposition berechnen
+    x = margin
+    y = page_height - max_height - margin
 
-    try:
-        # Bild von URL herunterladen
-        response = requests.get(image_url)
-        response.raise_for_status()  # Wirft eine Ausnahme für HTTP-Fehler
+    if image_url:
+        try:
+            # Bild von URL herunterladen
+            response = requests.get(image_url)
+            response.raise_for_status()
+            img = Image.open(io.BytesIO(response.content))
 
-        img = Image.open(io.BytesIO(response.content))
+            # Bild in RGB-Modus konvertieren (falls es im CMYK-Modus ist)
+            if img.mode == 'CMYK':
+                img = img.convert('RGB')
 
-        # Bild in RGB-Modus konvertieren (falls es im CMYK-Modus ist)
-        if img.mode == 'CMYK':
-            img = img.convert('RGB')
+            # Bild skalieren
+            img.thumbnail((int(max_width), int(max_height)))
+        except Exception as e:
+            print(f"Fehler beim Laden des Bildes: {e}")
+            img = create_placeholder_image(int(max_width), int(max_height))
+    else:
+        img = create_placeholder_image(int(max_width), int(max_height))
 
-        # Seitenverhältnis des Bildes berechnen
-        img_ratio = img.width / img.height
-
-        # Bildgröße unter Beibehaltung des Seitenverhältnisses berechnen
-        if max_width / max_height > img_ratio:
-            # Höhe ist der begrenzende Faktor
-            image_height = max_height
-            image_width = image_height * img_ratio
-        else:
-            # Breite ist der begrenzende Faktor
-            image_width = max_width
-            image_height = image_width / img_ratio
-
-        # Bildposition berechnen
-        x = (page_width - image_width) / 2  # Zentriert horizontal
-        y = page_height - max_height - margin  # Oben mit Rand
-
-        # Bild in PDF einfügen
-        img_reader = ImageReader(img)
-        c.drawImage(img_reader, x, y, width=image_width, height=image_height)
-
-    except requests.exceptions.RequestException as e:
-        print(f"Fehler beim Herunterladen des Bildes: {e}")
-        # Hier könnten Sie ein Platzhalterbild oder eine Fehlermeldung einfügen
-    except Exception as e:
-        print(f"Fehler beim Verarbeiten des Bildes: {e}")
-        # Hier könnten Sie ein Platzhalterbild oder eine Fehlermeldung einfügen
+    # Bild in PDF einfügen
+    img_reader = ImageReader(img)
+    c.drawImage(img_reader, x, y, width=img.width, height=img.height)
 
     # Memetext hinzufügen
     c.setFillColorRGB(0, 0, 0)  # Schwarz
     c.setFont("Helvetica", 14)
     text_width = c.stringWidth(meme_text, "Helvetica", 14)
-    c.drawString((page_width - text_width) / 2, y - 1*cm, meme_text)
+    c.drawString((page_width - text_width) / 2, y - 1 * cm, meme_text)
 
     # Namen hinzufügen
     c.setFillColorRGB(0.5, 0.5, 0.5)  # Grau
