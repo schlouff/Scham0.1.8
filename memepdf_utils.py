@@ -55,7 +55,7 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text=""):
 
         # Bildposition berechnen
         x = (page_width - image_width) / 2  # Zentriert horizontal
-        y = page_height - image_height - margin  # Oben mit Rand
+        y = page_height - max_height - margin  # Oben mit Rand
 
         # Bild in PDF einfügen
         img_reader = ImageReader(img)
