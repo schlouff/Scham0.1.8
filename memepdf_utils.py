@@ -1,11 +1,13 @@
-import streamlit as st
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A6
-import io
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.utils import ImageReader
 from PIL import Image
 import requests
-from reportlab.lib.utils import ImageReader
+import io
+import os
 
 
 def create_placeholder_image(width, height):
@@ -53,8 +55,16 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text="", image_url=N
 
     # Memetext hinzufügen (mehrzeilig)
     c.setFillColorRGB(0, 0, 0)  # Schwarz
-    pdfmetrics.registerFont(TTFont('Helvetica', 'Helvetica.ttf'))
-    c.setFont("Helvetica", 14)
+
+    # Überprüfen und registrieren der Schriftart
+    font_path = "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"
+    if os.path.exists(font_path):
+        pdfmetrics.registerFont(TTFont('LiberationSans', font_path))
+        font_name = 'LiberationSans'
+    else:
+        font_name = 'Helvetica'  # Fallback auf eine Standardschriftart
+
+    c.setFont(font_name, 14)
 
     # Text in Zeilen aufteilen
     words = meme_text.split()
@@ -62,7 +72,7 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text="", image_url=N
     current_line = []
     for word in words:
         test_line = ' '.join(current_line + [word])
-        if c.stringWidth(test_line, "Helvetica", 14) <= max_width:
+        if c.stringWidth(test_line, font_name, 14) <= max_width:
             current_line.append(word)
         else:
             lines.append(' '.join(current_line))
@@ -71,23 +81,25 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text="", image_url=N
         lines.append(' '.join(current_line))
 
     # Maximale Anzahl von Zeilen begrenzen
-    max_lines = 4
+    max_lines = 5
     if len(lines) > max_lines:
         lines = lines[:max_lines - 1] + ['...']
 
     # Text zentriert zeichnen
-    text_height = len(lines) * 20  # Zeilenhöhe
-    start_y = y - 1 * cm - text_height
+    line_height = 20  # Zeilenhöhe
+    text_height = len(lines) * line_height
+    start_y = y - 1 * cm - line_height  # Startposition für den Text
+
     for i, line in enumerate(lines):
-        text_width = c.stringWidth(line, "Helvetica", 14)
+        text_width = c.stringWidth(line, font_name, 14)
         x = (page_width - text_width) / 2
-        c.drawString(x, start_y + i * 20, line)
+        c.drawString(x, start_y - i * line_height, line)
 
     # Namen hinzufügen
     c.setFillColorRGB(0.5, 0.5, 0.5)  # Grau
-    c.setFont("Helvetica", 8)
+    c.setFont(font_name, 8)
     name_text = f"created by: {user_name}"
-    text_width = c.stringWidth(name_text, "Helvetica", 8)
+    text_width = c.stringWidth(name_text, font_name, 8)
     c.drawString(page_width - text_width - margin, margin, name_text)
 
     c.save()
