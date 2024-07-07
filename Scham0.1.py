@@ -192,6 +192,8 @@ if __name__ == '__main__':
                     else:
                         st.session_state['history'] += f'Du: {user_input}\n'
 
+                        auto_scroll_to_top()
+
                     st.text_area(label='Chat-Verlauf', value=st.session_state['history'], height=400)
 
                     if st.session_state.current_question_index < len(questions) - 1:
@@ -210,7 +212,7 @@ if __name__ == '__main__':
 
                         st.session_state.current_question_index += 1
 
-                    auto_scroll_to_top()
+
 
     if 'pdf' in locals():
         # Konvertieren Sie das PDF in ein BytesIO-Objekt
@@ -234,6 +236,7 @@ if __name__ == '__main__':
 
         # Download-Button für den Benutzer
         st.download_button(
+            
             label=f"10x15 PDF herunterladen ({timestamp})",
             data=pdf,
             file_name=gcs_filename,
