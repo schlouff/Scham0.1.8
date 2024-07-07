@@ -27,7 +27,7 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text=""):
     max_height = page_height * 0.7  # Maximale Höhe des Bildes (70% der Seitenhöhe)
 
     # Feste Bild-URL als Platzhalter
-    image_url = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-xIk4R6XoepUGhIv0fGMN9fNO/user-4jjrGs2Epq50a5LjnfHtBvWA/img-GnPNbWZaXbtHKICJHr5eB68p.png?st=2024-07-07T09%3A37%3A22Z&se=2024-07-07T11%3A37%3A22Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-06T17%3A28%3A20Z&ske=2024-07-07T17%3A28%3A20Z&sks=b&skv=2023-11-03&sig=wGaxmj0ZQKhzE1FYMcfVG/AOXMgz6TiYM0YO0njnsEY%3D"
+    image_url = "https://help.blackbit.com/hubfs/hilfe.blackbit.de/wordpress%20bild%20aus%20url%20hinzufuegen%201.png"
 
     try:
         # Bild von URL herunterladen
