@@ -3,7 +3,7 @@
 import streamlit as st
 from io import BytesIO
 
-from pdf_utils import create_10x15_pdf_with_image
+
 
 import os
 import time
@@ -200,26 +200,25 @@ if __name__ == '__main__':
 
         # Meme-Erstellung und PDF-Generierung
         if st.session_state.image_generated:
-            meme_creator_ui(st.session_state.image_url)
-            pdf = create_10x15_pdf_with_image(st.session_state.image_url, st.session_state.user_name)
-
-            # PDF-Upload und Download
-            if 'pdf' in locals():
-                pdf_bytes = BytesIO(pdf.getvalue())
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                gcs_filename = f"10x15_pdf_mit_bild_{timestamp}.pdf"
-                bucket_name = "vse-schamstaton24-07"
-
-                try:
-                    upload_pdf_to_gcs(bucket_name, pdf_bytes, f"MemePDFs/{gcs_filename}")
-                    st.success(f"PDF erfolgreich in Google Cloud Storage hochgeladen: {gcs_filename}")
-                except Exception as e:
-                    st.error(f"Fehler beim Hochladen in Google Cloud Storage: {str(e)}")
-
-                st.download_button(
-                    label=f"10x15 PDF herunterladen ({timestamp})",
-                    data=pdf,
-                    file_name=gcs_filename,
-                    mime="application/pdf"
-                )
+            meme_creator_ui(st.session_state.image_url, st.session_state.user_name)
+            #
+            # # PDF-Upload und Download
+            # if 'pdf' in locals():
+            #     pdf_bytes = BytesIO(pdf.getvalue())
+            #     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            #     gcs_filename = f"10x15_pdf_mit_bild_{timestamp}.pdf"
+            #     bucket_name = "vse-schamstaton24-07"
+            #
+            #     try:
+            #         upload_pdf_to_gcs(bucket_name, pdf_bytes, f"MemePDFs/{gcs_filename}")
+            #         st.success(f"PDF erfolgreich in Google Cloud Storage hochgeladen: {gcs_filename}")
+            #     except Exception as e:
+            #         st.error(f"Fehler beim Hochladen in Google Cloud Storage: {str(e)}")
+            #
+            #     st.download_button(
+            #         label=f"10x15 PDF herunterladen ({timestamp})",
+            #         data=pdf,
+            #         file_name=gcs_filename,
+            #         mime="application/pdf"
+            #     )
 
