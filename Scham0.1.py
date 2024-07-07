@@ -13,6 +13,8 @@ from datetime import datetime
 
 from upload_pdf import upload_pdf_to_gcs
 
+from meme_creator import meme_creator_ui
+
 def set_page_top():
     st.markdown(
         """
@@ -137,7 +139,7 @@ if __name__ == '__main__':
     with col2:
         st.image('ai.png', width=70)
 
-    # Neues Eingabefeld für den Namen
+    # Namenseingabe
     if 'user_name' not in st.session_state:
         st.session_state.user_name = ""
 
@@ -147,33 +149,28 @@ if __name__ == '__main__':
         if st.button("Name bestätigen"):
             if user_name:
                 st.session_state.user_name = user_name
-                print(f"Benutzername: {st.session_state.user_name}")  # Anzeige im Terminal
+                print(f"Benutzername: {st.session_state.user_name}")
                 st.success(f"Danke, {st.session_state.user_name}! Lass uns beginnen.")
-                st.write(f"Eingegebener Name: {st.session_state.user_name}")  # Anzeige in der Streamlit-App
+                st.write(f"Eingegebener Name: {st.session_state.user_name}")
             else:
                 st.warning("Bitte gib deinen Namen ein.")
     else:
-        # Anzeige des gespeicherten Namens, wenn bereits eingegeben
         st.write(f"Eingegebener Name: {st.session_state.user_name}")
-        print(f"Gespeicherter Benutzername: {st.session_state.user_name}")  # Anzeige im Terminal bei jedem Neustart
+        print(f"Gespeicherter Benutzername: {st.session_state.user_name}")
 
-    # Nur den Chat-Bot anzeigen, wenn der Name eingegeben wurde
+    # Hauptlogik
     if st.session_state.user_name:
         if 'current_question_index' not in st.session_state:
             st.session_state.current_question_index = 0
-
         if 'responses' not in st.session_state:
             st.session_state.responses = []
+        if 'image_generated' not in st.session_state:
+            st.session_state.image_generated = False
 
         with st.form(key='chat_form'):
-            if st.session_state.current_question_index < len(questions):
-                current_question = questions[st.session_state.current_question_index]
-            else:
-                current_question = "Danke für deine Antworten. Wie kann ich dir sonst noch helfen?"
-
+            current_question = questions[min(st.session_state.current_question_index, len(questions) - 1)]
             st.write(f'Chat Bot: {current_question}')
             user_input = st.text_input('Du:', '')
-
             submit_button = st.form_submit_button(label='Senden')
 
             if submit_button:
@@ -181,19 +178,12 @@ if __name__ == '__main__':
                     st.write('Chat Bot: Ich war froh, dir helfen zu können. Tschüss!')
                     time.sleep(2)
                     st.stop()
-
-                if user_input.lower() == '':
+                elif user_input.lower() == '':
                     st.warning('Bitte gib eine Nachricht ein.')
                 else:
                     st.session_state.responses.append(user_input)
-
-                    if 'history' not in st.session_state:
-                        st.session_state['history'] = f'Du: {user_input}\n'
-                    else:
-                        st.session_state['history'] += f'Du: {user_input}\n'
-
-                        auto_scroll_to_top()
-
+                    st.session_state['history'] = st.session_state.get('history', '') + f'Du: {user_input}\n'
+                    auto_scroll_to_top()
                     st.text_area(label='Chat-Verlauf', value=st.session_state['history'], height=400)
 
                     if st.session_state.current_question_index < len(questions) - 1:
@@ -201,45 +191,35 @@ if __name__ == '__main__':
                     elif st.session_state.current_question_index == len(questions) - 1:
                         artistic_description = create_artistic_description(st.session_state.responses)
                         st.write(f'Künstlerische Beschreibung: {artistic_description}')
-
-                        # Erzeuge die Bild-URL und zeige sie an
                         image_url = create_image_url(artistic_description)
                         st.write(f'Bild-URL: {image_url}')
                         st.image(image_url)
-
-                        # Erzeuge das PDF mit der generierten Bild-URL
-                        pdf = create_10x15_pdf_with_image(image_url, st.session_state.user_name)
-
+                        st.session_state.image_url = image_url
+                        st.session_state.image_generated = True
                         st.session_state.current_question_index += 1
 
+        # Meme-Erstellung und PDF-Generierung
+        if st.session_state.image_generated:
+            meme_creator_ui(st.session_state.image_url)
+            pdf = create_10x15_pdf_with_image(st.session_state.image_url, st.session_state.user_name)
 
+            # PDF-Upload und Download
+            if 'pdf' in locals():
+                pdf_bytes = BytesIO(pdf.getvalue())
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                gcs_filename = f"10x15_pdf_mit_bild_{timestamp}.pdf"
+                bucket_name = "vse-schamstaton24-07"
 
-    if 'pdf' in locals():
-        # Konvertieren Sie das PDF in ein BytesIO-Objekt
-        pdf_bytes = BytesIO(pdf.getvalue())
+                try:
+                    upload_pdf_to_gcs(bucket_name, pdf_bytes, f"MemePDFs/{gcs_filename}")
+                    st.success(f"PDF erfolgreich in Google Cloud Storage hochgeladen: {gcs_filename}")
+                except Exception as e:
+                    st.error(f"Fehler beim Hochladen in Google Cloud Storage: {str(e)}")
 
-        # Generiere einen Timestamp für den Dateinamen
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        # Dateiname für GCS
-        gcs_filename = f"10x15_pdf_mit_bild_{timestamp}.pdf"
-
-        # Bucket-Name
-        bucket_name = "vse-schamstaton24-07"
-
-        try:
-            # Upload zur Google Cloud Storage
-            upload_pdf_to_gcs(bucket_name, pdf_bytes, f"MemePDFs/{gcs_filename}")
-            st.success(f"PDF erfolgreich in Google Cloud Storage hochgeladen: {gcs_filename}")
-        except Exception as e:
-            st.error(f"Fehler beim Hochladen in Google Cloud Storage: {str(e)}")
-
-        # Download-Button für den Benutzer
-        st.download_button(
-            
-            label=f"10x15 PDF herunterladen ({timestamp})",
-            data=pdf,
-            file_name=gcs_filename,
-            mime="application/pdf"
-        )
+                st.download_button(
+                    label=f"10x15 PDF herunterladen ({timestamp})",
+                    data=pdf,
+                    file_name=gcs_filename,
+                    mime="application/pdf"
+                )
 
