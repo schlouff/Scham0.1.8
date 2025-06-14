@@ -4,7 +4,7 @@ from google.oauth2 import service_account
 import streamlit as st
 
 def upload_pdf_to_gcs(bucket_name, source_file, destination_blob_name):
-    gcs_config = st.secrets["gcs_bucket"].copy()
+    gcs_config =         gcs_config = dict(st.secrets["gcs_bucket"])
     gcs_config["private_key"] = gcs_config["private_key"].replace('\\n', '\n')
 
     credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
