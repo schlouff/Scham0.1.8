@@ -27,9 +27,12 @@ def create_10x15_meme_pdf(user_name="PlaceholderName", meme_text="", image_url=N
 
     if image_url:
         try:
-            response = requests.get(image_url)
-            response.raise_for_status()
-            img = Image.open(io.BytesIO(response.content))
+            if isinstance(image_url, (bytes, bytearray)):
+                img = Image.open(io.BytesIO(image_url))
+            else:
+                response = requests.get(image_url)
+                response.raise_for_status()
+                img = Image.open(io.BytesIO(response.content))
 
             if img.mode == 'CMYK':
                 img = img.convert('RGB')

@@ -117,15 +117,15 @@ def create_artistic_description(responses):
     return artistic_description
 
 def create_image_url(description_prompt):
+    import base64
     response = client.images.generate(
-        model='dall-e-3',
+        model='gpt-image-1',
         prompt=description_prompt,
         size='1024x1024',
-        quality='standard',
         n=1
     )
-    image_url = response.data[0].url
-    return image_url
+    image_bytes = base64.b64decode(response.data[0].b64_json)
+    return image_bytes
 
 
 
