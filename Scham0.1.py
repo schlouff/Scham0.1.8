@@ -122,7 +122,8 @@ def create_image_url(description_prompt):
         model='gpt-image-1',
         prompt=description_prompt,
         size='1024x1024',
-        n=1
+        n=1,
+        timeout=120
     )
     image_bytes = base64.b64decode(response.data[0].b64_json)
     return image_bytes
@@ -187,10 +188,11 @@ if __name__ == '__main__':
                     if st.session_state.current_question_index < len(questions) - 1:
                         st.session_state.current_question_index += 1
                     elif st.session_state.current_question_index == len(questions) - 1:
-                        artistic_description = create_artistic_description(st.session_state.responses)
+                        with st.spinner('Erstelle künstlerische Beschreibung...'):
+                            artistic_description = create_artistic_description(st.session_state.responses)
                         st.write(f'Künstlerische Beschreibung: {artistic_description}')
-                        image_url = create_image_url(artistic_description)
-                        st.write(f'Bild-URL: {image_url}')
+                        with st.spinner('Generiere Bild... (kann bis zu 60 Sekunden dauern)'):
+                            image_url = create_image_url(artistic_description)
                         st.image(image_url)
                         st.session_state.image_url = image_url
                         st.session_state.image_generated = True
