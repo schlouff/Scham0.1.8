@@ -96,12 +96,20 @@ def chat_with_bot(user_input):
 
 def create_artistic_description(responses):
     description_prompt = (
-        f"Create a detailed, artistic image description in English that serves as a prompt for DALL·E 3. Base it on the following inputs and integrate them into a coherent, vivid scene:\n"
-        f"1. Protagonist (what the user was, e.g. an animal or object): {responses[3]}\n"
-        f"2. Other figures (what others were): {responses[4]}\n"
-        f"3. Space or landscape: {responses[5]}\n"
-        f"4. Empowering focus element (object, color, place giving strength): {responses[6]}\n"
-        f"Important rules: Do NOT include any human figures or faces. If needed, replace people with animals or symbolic objects. The description must be positive, metaphorical, and abstract — avoid any content that could be interpreted as violent, sexual, embarrassing, or harmful. Focus on atmosphere, color, light, and symbolic meaning. The result must comply with DALL·E content policies. Output only the image description, nothing else."
+        f"Create a detailed, artistic image description in English that serves as a prompt for an image generator. "
+        f"Base it strictly on the following inputs:\n\n"
+        f"- THE USER (protagonist, 'ich'): {responses[3]}\n"
+        f"- THE OTHERS (other figures in the scene): {responses[4]}\n"
+        f"- Setting / landscape: {responses[5]}\n"
+        f"- Empowering element (object, color, or place giving strength): {responses[6]}\n\n"
+        f"CRITICAL RULES — follow exactly:\n"
+        f"1. The protagonist representing THE USER must be depicted as '{responses[3]}'. Do not reassign this creature/object to any other role.\n"
+        f"2. The other figure(s) representing THE OTHERS must be depicted as '{responses[4]}'. Do not swap or mix up who is who.\n"
+        f"3. Never assign the protagonist's creature/form to the other figures, and vice versa.\n"
+        f"4. Do NOT include any human figures or faces. Replace people with animals or symbolic objects.\n"
+        f"5. The description must be positive, metaphorical, and abstract — avoid violent, sexual, embarrassing, or harmful content.\n"
+        f"6. Focus on atmosphere, color, light, and symbolic meaning. The result must comply with content policies.\n"
+        f"Output only the image description, nothing else."
     )
 
     messages.append({'role': 'user', 'content': description_prompt})
@@ -238,6 +246,26 @@ if __name__ == '__main__':
         # Meme-Erstellung und PDF-Generierung
         if st.session_state.image_generated:
             meme_creator_ui(st.session_state.image_url, st.session_state.user_name)
+
+        # Wartung: Nutzerangaben in Zwischenablage
+        responses = st.session_state.get('responses', [])
+        if len(responses) >= 7:
+            labels = ['Ich war', 'Die Anderen waren', 'Landschaft', 'Kraftquelle']
+            lines = [f"Name: {st.session_state.user_name}"]
+            for i, label in enumerate(labels):
+                lines.append(f"{label}: {responses[3 + i]}")
+            copy_text = '\n'.join(lines).replace('`', "'").replace('\\', '\\\\').replace('\n', '\\n')
+            st.components.v1.html(
+                f"""
+                <div style="text-align:right; margin-top:60px;">
+                    <button onclick="navigator.clipboard.writeText(`{copy_text}`).then(()=>this.textContent='✓ kopiert').catch(()=>this.textContent='Fehler')"
+                        style="background:none;border:none;color:#bbb;font-size:11px;cursor:pointer;padding:4px 8px;">
+                        Nutzerangaben kopieren
+                    </button>
+                </div>
+                """,
+                height=50,
+            )
             #
             # # PDF-Upload und Download
             # if 'pdf' in locals():
