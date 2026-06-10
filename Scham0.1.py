@@ -205,37 +205,36 @@ if __name__ == '__main__':
                 st.session_state.current_question_index = 3
                 st.rerun()
         else:
-            with st.form(key='chat_form'):
-                current_question = questions[min(st.session_state.current_question_index, len(questions) - 1)]
-                st.write(f'Chat Bot: {current_question}')
-                user_input = st.text_input('Du:', '', key=f'input_{st.session_state.input_key}')
-                submit_button = st.form_submit_button(label='Senden')
+            if st.session_state.current_question_index == len(questions) - 1 and not st.session_state.image_generated:
+                st.write(f'Chat Bot: {questions[-1]}')
+                with st.spinner('Erstelle künstlerische Beschreibung...'):
+                    artistic_description = create_artistic_description(st.session_state.responses)
+                st.write(f'Künstlerische Beschreibung: {artistic_description}')
+                with st.spinner('Generiere Bild... (kann bis zu 60 Sekunden dauern)'):
+                    image_url = create_image_url(artistic_description)
+                st.image(image_url)
+                st.session_state.image_url = image_url
+                st.session_state.image_generated = True
+            elif not st.session_state.image_generated:
+                with st.form(key='chat_form'):
+                    current_question = questions[st.session_state.current_question_index]
+                    st.write(f'Chat Bot: {current_question}')
+                    user_input = st.text_input('Du:', '', key=f'input_{st.session_state.input_key}')
+                    submit_button = st.form_submit_button(label='Senden')
 
-                if submit_button:
-                    if user_input.lower() in ['exit', 'quit']:
-                        st.write('Chat Bot: Ich war froh, dir helfen zu können. Tschüss!')
-                        time.sleep(2)
-                        st.stop()
-                    elif user_input.lower() == '':
-                        st.warning('Bitte gib eine Nachricht ein.')
-                    else:
-                        st.session_state.responses.append(user_input)
-                        st.session_state['history'] = st.session_state.get('history', '') + f'Du: {user_input}\n'
-
-                        if st.session_state.current_question_index < len(questions) - 1:
+                    if submit_button:
+                        if user_input.lower() in ['exit', 'quit']:
+                            st.write('Chat Bot: Ich war froh, dir helfen zu können. Tschüss!')
+                            time.sleep(2)
+                            st.stop()
+                        elif user_input.lower() == '':
+                            st.warning('Bitte gib eine Nachricht ein.')
+                        else:
+                            st.session_state.responses.append(user_input)
+                            st.session_state['history'] = st.session_state.get('history', '') + f'Du: {user_input}\n'
                             st.session_state.current_question_index += 1
                             st.session_state.input_key += 1
                             st.rerun()
-                        elif st.session_state.current_question_index == len(questions) - 1:
-                            with st.spinner('Erstelle künstlerische Beschreibung...'):
-                                artistic_description = create_artistic_description(st.session_state.responses)
-                            st.write(f'Künstlerische Beschreibung: {artistic_description}')
-                            with st.spinner('Generiere Bild... (kann bis zu 60 Sekunden dauern)'):
-                                image_url = create_image_url(artistic_description)
-                            st.image(image_url)
-                            st.session_state.image_url = image_url
-                            st.session_state.image_generated = True
-                            st.session_state.current_question_index += 1
 
         # Meme-Erstellung und PDF-Generierung
         if st.session_state.image_generated:
