@@ -219,11 +219,10 @@ if __name__ == '__main__':
                     else:
                         st.session_state.responses.append(user_input)
                         st.session_state['history'] = st.session_state.get('history', '') + f'Du: {user_input}\n'
-                        auto_scroll_to_top()
-                        st.text_area(label='Chat-Verlauf', value=st.session_state['history'], height=400)
 
                         if st.session_state.current_question_index < len(questions) - 1:
                             st.session_state.current_question_index += 1
+                            st.rerun()
                         elif st.session_state.current_question_index == len(questions) - 1:
                             with st.spinner('Erstelle künstlerische Beschreibung...'):
                                 artistic_description = create_artistic_description(st.session_state.responses)
