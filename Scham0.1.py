@@ -97,11 +97,10 @@ def chat_with_bot(user_input):
 def create_artistic_description(responses):
     description_prompt = (
         f"Create a detailed, artistic image description in English that serves as a prompt for DALL·E 3. Base it on the following inputs and integrate them into a coherent, vivid scene:\n"
-        f"3. Details (clothing, objects, colors, smells): {responses[3]}\n"
-        f"4. Protagonist: {responses[4]}\n"
-        f"5. Other figures: {responses[5]}\n"
-        f"6. Space or landscape: {responses[6]}\n"
-        f"7. Element deserving special attention as empowering focus: {responses[7]}\n"
+        f"1. Protagonist (what the user was, e.g. an animal or object): {responses[3]}\n"
+        f"2. Other figures (what others were): {responses[4]}\n"
+        f"3. Space or landscape: {responses[5]}\n"
+        f"4. Empowering focus element (object, color, place giving strength): {responses[6]}\n"
         f"Important rules: Do NOT include any human figures or faces. If needed, replace people with animals or symbolic objects. The description must be positive, metaphorical, and abstract — avoid any content that could be interpreted as violent, sexual, embarrassing, or harmful. Focus on atmosphere, color, light, and symbolic meaning. The result must comply with DALL·E content policies. Output only the image description, nothing else."
     )
 
