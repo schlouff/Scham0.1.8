@@ -164,6 +164,8 @@ if __name__ == '__main__':
             st.session_state.responses = []
         if 'image_generated' not in st.session_state:
             st.session_state.image_generated = False
+        if 'input_key' not in st.session_state:
+            st.session_state.input_key = 0
 
         if st.session_state.current_question_index in (0, 1, 2):
             st.markdown("""
@@ -206,7 +208,7 @@ if __name__ == '__main__':
             with st.form(key='chat_form'):
                 current_question = questions[min(st.session_state.current_question_index, len(questions) - 1)]
                 st.write(f'Chat Bot: {current_question}')
-                user_input = st.text_input('Du:', '')
+                user_input = st.text_input('Du:', '', key=f'input_{st.session_state.input_key}')
                 submit_button = st.form_submit_button(label='Senden')
 
                 if submit_button:
@@ -222,6 +224,7 @@ if __name__ == '__main__':
 
                         if st.session_state.current_question_index < len(questions) - 1:
                             st.session_state.current_question_index += 1
+                            st.session_state.input_key += 1
                             st.rerun()
                         elif st.session_state.current_question_index == len(questions) - 1:
                             with st.spinner('Erstelle künstlerische Beschreibung...'):
