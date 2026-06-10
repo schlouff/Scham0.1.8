@@ -162,6 +162,18 @@ if __name__ == '__main__':
     else:
         st.write(f"Eingegebener Name: {st.session_state.user_name}")
         print(f"Gespeicherter Benutzername: {st.session_state.user_name}")
+        _label_map = {3: 'Ich war', 4: 'Die Anderen waren', 5: 'Landschaft', 6: 'Kraftquelle'}
+        _lines = [f"Name: {st.session_state.user_name}"]
+        for _i, _r in enumerate(st.session_state.get('responses', [])):
+            if _i in _label_map:
+                _lines.append(f"{_label_map[_i]}: {_r}")
+        _copy_text = '\\n'.join(_lines).replace('`', "\\'")
+        st.components.v1.html(f"""
+        <span onclick="navigator.clipboard.writeText(`{_copy_text}`).then(()=>this.textContent='✓ kopiert').catch(()=>this.textContent='Fehler')"
+              style="font-size:12px;color:#aaa;cursor:pointer;font-family:sans-serif;">
+            Eingaben kopieren
+        </span>
+        """, height=22)
 
     # Hauptlogik
     if st.session_state.user_name:
@@ -247,35 +259,6 @@ if __name__ == '__main__':
         if st.session_state.image_generated:
             meme_creator_ui(st.session_state.image_url, st.session_state.user_name)
 
-        # Wartung: Nutzerangaben in Zwischenablage (oben rechts, ab erster Antwort)
-        responses = st.session_state.get('responses', [])
-        if responses:
-            label_map = {3: 'Ich war', 4: 'Die Anderen waren', 5: 'Landschaft', 6: 'Kraftquelle'}
-            lines = [f"Name: {st.session_state.user_name}"]
-            for i, resp in enumerate(responses):
-                if i in label_map:
-                    lines.append(f"{label_map[i]}: {resp}")
-            copy_text = '\\n'.join(lines).replace('`', "\\'").replace('\\\\n', '\\n')
-            st.components.v1.html(f"""
-            <script>
-            (function() {{
-                var text = `{copy_text}`;
-                var old = window.parent.document.getElementById('maint-copy-btn');
-                if (old) old.remove();
-                var btn = window.parent.document.createElement('button');
-                btn.id = 'maint-copy-btn';
-                btn.textContent = 'Nutzerangaben kopieren';
-                btn.style.cssText = 'position:fixed;top:14px;right:80px;z-index:9999;background:none;border:1px solid #bbb;color:#999;font-size:11px;cursor:pointer;padding:3px 10px;border-radius:4px;';
-                btn.onclick = function() {{
-                    navigator.clipboard.writeText(text).then(function() {{
-                        btn.textContent = '✓ kopiert';
-                        setTimeout(function() {{ btn.textContent = 'Nutzerangaben kopieren'; }}, 2000);
-                    }}).catch(function() {{ btn.textContent = 'Fehler'; }});
-                }};
-                window.parent.document.body.appendChild(btn);
-            }})();
-            </script>
-            """, height=0)
             #
             # # PDF-Upload und Download
             # if 'pdf' in locals():
