@@ -56,7 +56,7 @@ client = OpenAI()
 questions = [
     """\n\n**1/8**\n\n**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?""",
 
-    "\n\n**2/8**\n\n**Erinnere dich an eine peinliche Situation.**\n\nDu kannst später ein Bild daraus kreieren. \n\n Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\n**Wenn du eine Erinnerung in deinem Kopf hast, schreib 'ok' und drück auf 'Senden'.**",
+    "\n\n**2/8**\n\n**Erinnere dich an eine peinliche Situation.**\n\nDu kannst später ein Bild daraus kreieren. \n\n Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\nWenn du eine Erinnerung in deinem Kopf hast, drück den Button unten.",
 
     "\n\n**3/8**\n\n**Ruf dir die Situation vor Augen.**\n\nWo ist sie passiert?\n\nWer war dabei?\n\nGibt es bestimmte Wörter oder Sätze, an die du dich erinnerst? Wie klang die Stimme von dir und deinem Gegenüber?\n\nGibt es Kleidungsstücke, Gegenstände, Farben, Gerüche, an die du dich erinnerst?\n\n**Wenn du dich genug erinnert hast, schreib 'ok' und drück auf 'Senden'.**",
 
@@ -165,12 +165,33 @@ if __name__ == '__main__':
         if 'image_generated' not in st.session_state:
             st.session_state.image_generated = False
 
+        if st.session_state.current_question_index in (0, 1):
+            st.markdown("""
+            <style>
+            div[data-testid="stButton"] > button {
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                min-width: 320px;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
         if st.session_state.current_question_index == 0:
             st.write(f'Chat Bot: {questions[0]}')
             if st.button('Bin bereit'):
                 st.session_state.responses.append('bereit')
                 st.session_state['history'] = st.session_state.get('history', '') + 'Du: bereit\n'
                 st.session_state.current_question_index = 1
+                st.rerun()
+        elif st.session_state.current_question_index == 1:
+            st.write(f'Chat Bot: {questions[1]}')
+            if st.button('Ich habe eine Erinnerung in meinem Kopf und es kann weitergehen.'):
+                st.session_state.responses.append('ok')
+                st.session_state['history'] = st.session_state.get('history', '') + 'Du: ok\n'
+                st.session_state.current_question_index = 2
                 st.rerun()
         else:
             with st.form(key='chat_form'):
