@@ -54,7 +54,7 @@ client = OpenAI()
 
 # Initialisierungen
 questions = [
-    """\n\n**1/8**\n\n**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?\n\n**Dann schreib 'bereit' und drück auf 'Senden'.**""",
+    """\n\n**1/8**\n\n**Hallo. Schön, dass du hier bist.**\n\nBist du bereit?""",
 
     "\n\n**2/8**\n\n**Erinnere dich an eine peinliche Situation.**\n\nDu kannst später ein Bild daraus kreieren. \n\n Entscheide dich für etwas, mit dem du hier und jetzt umgehen kannst.\n\nNimm dir Zeit.\n\n**Wenn du eine Erinnerung in deinem Kopf hast, schreib 'ok' und drück auf 'Senden'.**",
 
@@ -149,8 +149,7 @@ if __name__ == '__main__':
             if user_name:
                 st.session_state.user_name = user_name
                 print(f"Benutzername: {st.session_state.user_name}")
-                st.success(f"Danke, {st.session_state.user_name}! Lass uns beginnen.")
-                st.write(f"Eingegebener Name: {st.session_state.user_name}")
+                st.rerun()
             else:
                 st.warning("Bitte gib deinen Namen ein.")
     else:
@@ -166,37 +165,45 @@ if __name__ == '__main__':
         if 'image_generated' not in st.session_state:
             st.session_state.image_generated = False
 
-        with st.form(key='chat_form'):
-            current_question = questions[min(st.session_state.current_question_index, len(questions) - 1)]
-            st.write(f'Chat Bot: {current_question}')
-            user_input = st.text_input('Du:', '')
-            submit_button = st.form_submit_button(label='Senden')
+        if st.session_state.current_question_index == 0:
+            st.write(f'Chat Bot: {questions[0]}')
+            if st.button('Bin bereit'):
+                st.session_state.responses.append('bereit')
+                st.session_state['history'] = st.session_state.get('history', '') + 'Du: bereit\n'
+                st.session_state.current_question_index = 1
+                st.rerun()
+        else:
+            with st.form(key='chat_form'):
+                current_question = questions[min(st.session_state.current_question_index, len(questions) - 1)]
+                st.write(f'Chat Bot: {current_question}')
+                user_input = st.text_input('Du:', '')
+                submit_button = st.form_submit_button(label='Senden')
 
-            if submit_button:
-                if user_input.lower() in ['exit', 'quit']:
-                    st.write('Chat Bot: Ich war froh, dir helfen zu können. Tschüss!')
-                    time.sleep(2)
-                    st.stop()
-                elif user_input.lower() == '':
-                    st.warning('Bitte gib eine Nachricht ein.')
-                else:
-                    st.session_state.responses.append(user_input)
-                    st.session_state['history'] = st.session_state.get('history', '') + f'Du: {user_input}\n'
-                    auto_scroll_to_top()
-                    st.text_area(label='Chat-Verlauf', value=st.session_state['history'], height=400)
+                if submit_button:
+                    if user_input.lower() in ['exit', 'quit']:
+                        st.write('Chat Bot: Ich war froh, dir helfen zu können. Tschüss!')
+                        time.sleep(2)
+                        st.stop()
+                    elif user_input.lower() == '':
+                        st.warning('Bitte gib eine Nachricht ein.')
+                    else:
+                        st.session_state.responses.append(user_input)
+                        st.session_state['history'] = st.session_state.get('history', '') + f'Du: {user_input}\n'
+                        auto_scroll_to_top()
+                        st.text_area(label='Chat-Verlauf', value=st.session_state['history'], height=400)
 
-                    if st.session_state.current_question_index < len(questions) - 1:
-                        st.session_state.current_question_index += 1
-                    elif st.session_state.current_question_index == len(questions) - 1:
-                        with st.spinner('Erstelle künstlerische Beschreibung...'):
-                            artistic_description = create_artistic_description(st.session_state.responses)
-                        st.write(f'Künstlerische Beschreibung: {artistic_description}')
-                        with st.spinner('Generiere Bild... (kann bis zu 60 Sekunden dauern)'):
-                            image_url = create_image_url(artistic_description)
-                        st.image(image_url)
-                        st.session_state.image_url = image_url
-                        st.session_state.image_generated = True
-                        st.session_state.current_question_index += 1
+                        if st.session_state.current_question_index < len(questions) - 1:
+                            st.session_state.current_question_index += 1
+                        elif st.session_state.current_question_index == len(questions) - 1:
+                            with st.spinner('Erstelle künstlerische Beschreibung...'):
+                                artistic_description = create_artistic_description(st.session_state.responses)
+                            st.write(f'Künstlerische Beschreibung: {artistic_description}')
+                            with st.spinner('Generiere Bild... (kann bis zu 60 Sekunden dauern)'):
+                                image_url = create_image_url(artistic_description)
+                            st.image(image_url)
+                            st.session_state.image_url = image_url
+                            st.session_state.image_generated = True
+                            st.session_state.current_question_index += 1
 
         # Meme-Erstellung und PDF-Generierung
         if st.session_state.image_generated:
